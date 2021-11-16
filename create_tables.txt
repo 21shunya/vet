@@ -1,0 +1,271 @@
+BEGIN;
+
+
+CREATE TABLE IF NOT EXISTS public."Animal"
+(
+    id integer NOT NULL,
+    "Name" character varying(50) NOT NULL,
+    "Kind" character varying(50) NOT NULL,
+    "Age" smallint NOT NULL,
+    "Species" character varying(100),
+    id_client integer NOT NULL,
+    PRIMARY KEY (id)
+);
+
+CREATE TABLE IF NOT EXISTS public."Appointment"
+(
+    id integer NOT NULL,
+    id_animal integer NOT NULL,
+    "Date" timestamp without time zone NOT NULL,
+    id_services integer NOT NULL,
+    PRIMARY KEY (id)
+);
+
+COMMENT ON TABLE public."Appointment"
+    IS 'запись на приём';
+
+CREATE TABLE IF NOT EXISTS public."Client"
+(
+    id integer NOT NULL,
+    "Name" character varying(30) NOT NULL,
+    "Surname" character varying(100) NOT NULL,
+    "Patronymic" character varying(100) NOT NULL,
+    "Phone" text NOT NULL,
+    PRIMARY KEY (id)
+);
+
+CREATE TABLE IF NOT EXISTS public."Clinic"
+(
+    id integer NOT NULL,
+    "Name" character varying(100) NOT NULL,
+    "Address" character varying(100) NOT NULL,
+    "Head_doctor" integer NOT NULL,
+    "Phone" text NOT NULL,
+    "Schedule" text NOT NULL,
+    PRIMARY KEY (id)
+);
+
+CREATE TABLE IF NOT EXISTS public."Doctor"
+(
+    id integer NOT NULL,
+    "Name" character varying(30) NOT NULL,
+    "Surname" character varying(100) NOT NULL,
+    "Patronymic" character varying(100),
+    "Position" character varying(33) NOT NULL,
+    "Experience" interval NOT NULL,
+    "Qualification" character varying(20) NOT NULL,
+    "Address" character varying(100),
+    "Phone" text NOT NULL,
+    "University" text NOT NULL,
+    id_clinic integer NOT NULL,
+    PRIMARY KEY (id)
+);
+
+CREATE TABLE IF NOT EXISTS public."Food"
+(
+    id integer NOT NULL,
+    "Name" character varying(50) NOT NULL,
+    "Weight" smallint NOT NULL,
+    "Manufacturer" character varying NOT NULL,
+    "Amount" smallint NOT NULL,
+    "Type" character varying(30) NOT NULL,
+    PRIMARY KEY (id)
+);
+
+COMMENT ON COLUMN public."Food"."Manufacturer"
+    IS 'Производитель';
+
+COMMENT ON COLUMN public."Food"."Amount"
+    IS 'Количество товаров на складе';
+
+CREATE TABLE IF NOT EXISTS public."Food_Order"
+(
+    "Food_id" integer NOT NULL,
+    "Order_id" integer NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS public."History"
+(
+    id integer NOT NULL,
+    "Date" timestamp without time zone NOT NULL,
+    id_doctor integer NOT NULL,
+    "Complaints" text NOT NULL,
+    "Diagnosis" character varying(150) NOT NULL,
+    "Recommendations" text NOT NULL,
+    id_animal integer NOT NULL,
+    PRIMARY KEY (id)
+);
+
+COMMENT ON COLUMN public."History"."Complaints"
+    IS 'Жалобы';
+
+CREATE TABLE IF NOT EXISTS public."Medications"
+(
+    id integer NOT NULL,
+    "Name" character varying(50) NOT NULL,
+    "Dosage" character varying(10) NOT NULL,
+    "Expiration_date" date NOT NULL,
+    "Manufacturer" character varying,
+    "Vol_qt" character varying(10),
+    PRIMARY KEY (id)
+);
+
+COMMENT ON COLUMN public."Medications"."Manufacturer"
+    IS 'Производитель';
+
+COMMENT ON COLUMN public."Medications"."Vol_qt"
+    IS 'Объем или количество таблеток';
+
+CREATE TABLE IF NOT EXISTS public."Order"
+(
+    id integer NOT NULL,
+    "Name" character varying NOT NULL,
+    "Surname" character varying NOT NULL,
+    "Phone" text NOT NULL,
+    "Total_amount" integer NOT NULL,
+    "Weight" smallint NOT NULL,
+	id_pharmacy integer NOT NULL,
+    PRIMARY KEY (id)
+);
+
+CREATE TABLE IF NOT EXISTS public."Order_Medications"
+(
+    "Order_id" integer NOT NULL,
+    "Medications_id" integer NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS public."Pharmacy_staff"
+(
+    id integer NOT NULL,
+    "Name" character varying(30) NOT NULL,
+    "Surname" character varying(100) NOT NULL,
+    "Patronymic" character varying(100),
+    "Phone" text NOT NULL,
+    "Address" character varying(100) NOT NULL,
+    "University" text NOT NULL,
+    "Position" character varying(33) NOT NULL,
+    id_vet_ph integer NOT NULL,
+    PRIMARY KEY (id)
+);
+
+CREATE TABLE IF NOT EXISTS public."Services"
+(
+    id integer NOT NULL,
+    "Name" character varying(100) NOT NULL,
+    "Price" smallint NOT NULL,
+    PRIMARY KEY (id)
+);
+
+CREATE TABLE IF NOT EXISTS public."Services_Clinic"
+(
+    "Services_id" integer NOT NULL,
+    "Clinic_id" integer NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS public."Veterinary_Pharmacy"
+(
+    id integer NOT NULL,
+    "Address" character varying(100) NOT NULL,
+    "Schedule" text NOT NULL,
+    "Phone" text NOT NULL,
+    id_clinic integer NOT NULL,
+    "Assortiment" character varying,
+    PRIMARY KEY (id)
+);
+
+ALTER TABLE public."Animal"
+    ADD FOREIGN KEY (id_client)
+    REFERENCES public."Client" (id)
+    NOT VALID;
+
+
+ALTER TABLE public."Appointment"
+    ADD FOREIGN KEY (id_animal)
+    REFERENCES public."Animal" (id)
+    NOT VALID;
+
+
+ALTER TABLE public."Appointment"
+    ADD FOREIGN KEY (id_services)
+    REFERENCES public."Services" (id)
+    NOT VALID;
+
+
+ALTER TABLE public."Clinic"
+    ADD FOREIGN KEY ("Head_doctor")
+    REFERENCES public."Doctor" (id)
+    NOT VALID;
+
+
+ALTER TABLE public."Doctor"
+    ADD FOREIGN KEY (id_clinic)
+    REFERENCES public."Clinic" (id)
+    NOT VALID;
+
+
+ALTER TABLE public."Food_Order"
+    ADD FOREIGN KEY ("Food_id")
+    REFERENCES public."Food" (id)
+    NOT VALID;
+
+
+ALTER TABLE public."Food_Order"
+    ADD FOREIGN KEY ("Order_id")
+    REFERENCES public."Order" (id)
+    NOT VALID;
+
+
+ALTER TABLE public."History"
+    ADD FOREIGN KEY (id_animal)
+    REFERENCES public."Animal" (id)
+    NOT VALID;
+
+
+ALTER TABLE public."History"
+    ADD FOREIGN KEY (id_doctor)
+    REFERENCES public."Doctor" (id)
+    NOT VALID;
+
+
+ALTER TABLE public."Order_Medications"
+    ADD FOREIGN KEY ("Medications_id")
+    REFERENCES public."Medications" (id)
+    NOT VALID;
+
+
+ALTER TABLE public."Order_Medications"
+    ADD FOREIGN KEY ("Order_id")
+    REFERENCES public."Order" (id)
+    NOT VALID;
+
+
+ALTER TABLE public."Pharmacy_staff"
+    ADD FOREIGN KEY (id_vet_ph)
+    REFERENCES public."Veterinary_Pharmacy" (id)
+    NOT VALID;
+
+
+ALTER TABLE public."Services_Clinic"
+    ADD FOREIGN KEY ("Clinic_id")
+    REFERENCES public."Clinic" (id)
+    NOT VALID;
+
+
+ALTER TABLE public."Services_Clinic"
+    ADD FOREIGN KEY ("Services_id")
+    REFERENCES public."Services" (id)
+    NOT VALID;
+
+
+ALTER TABLE public."Veterinary_Pharmacy"
+    ADD FOREIGN KEY (id_clinic)
+    REFERENCES public."Clinic" (id)
+    NOT VALID;
+
+
+ALTER TABLE public."Order"
+    ADD FOREIGN KEY (id_pharmacy)
+    REFERENCES public."Veterinary_Pharmacy" (id)
+    NOT VALID;
+
+END;
