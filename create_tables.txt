@@ -78,10 +78,10 @@ COMMENT ON COLUMN public."Food"."Manufacturer"
 COMMENT ON COLUMN public."Food"."Amount"
     IS 'Количество товаров на складе';
 
-CREATE TABLE IF NOT EXISTS public."Food_Order"
+CREATE TABLE IF NOT EXISTS public."Order_Food"
 (
-    "Food_id" integer NOT NULL,
-    "Order_id" integer NOT NULL
+    "Order_id" integer NOT NULL,
+    "Food_id" integer NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS public."History"
@@ -122,9 +122,7 @@ CREATE TABLE IF NOT EXISTS public."Order"
     "Name" character varying NOT NULL,
     "Surname" character varying NOT NULL,
     "Phone" text NOT NULL,
-    "Total_amount" integer NOT NULL,
-    "Weight" smallint NOT NULL,
-	id_pharmacy integer NOT NULL,
+    id_pharmacy integer NOT NULL,
     PRIMARY KEY (id)
 );
 
@@ -165,12 +163,22 @@ CREATE TABLE IF NOT EXISTS public."Services_Clinic"
 CREATE TABLE IF NOT EXISTS public."Veterinary_Pharmacy"
 (
     id integer NOT NULL,
-    "Address" character varying(100) NOT NULL,
     "Schedule" text NOT NULL,
     "Phone" text NOT NULL,
     id_clinic integer NOT NULL,
-    "Assortiment" character varying,
     PRIMARY KEY (id)
+);
+
+CREATE TABLE IF NOT EXISTS public."Veterinary_Pharmacy_Food"
+(
+    "Veterinary_Pharmacy_id" integer NOT NULL,
+    "Food_id" integer NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS public."Veterinary_Pharmacy_Medications"
+(
+    "Veterinary_Pharmacy_id" integer NOT NULL,
+    "Medications_id" integer NOT NULL
 );
 
 ALTER TABLE public."Animal"
@@ -203,15 +211,15 @@ ALTER TABLE public."Doctor"
     NOT VALID;
 
 
-ALTER TABLE public."Food_Order"
-    ADD FOREIGN KEY ("Food_id")
-    REFERENCES public."Food" (id)
+ALTER TABLE public."Order_Food"
+    ADD FOREIGN KEY ("Order_id")
+    REFERENCES public."Order" (id)
     NOT VALID;
 
 
-ALTER TABLE public."Food_Order"
-    ADD FOREIGN KEY ("Order_id")
-    REFERENCES public."Order" (id)
+ALTER TABLE public."Order_Food"
+    ADD FOREIGN KEY ("Food_id")
+    REFERENCES public."Food" (id)
     NOT VALID;
 
 
@@ -224,6 +232,12 @@ ALTER TABLE public."History"
 ALTER TABLE public."History"
     ADD FOREIGN KEY (id_doctor)
     REFERENCES public."Doctor" (id)
+    NOT VALID;
+
+
+ALTER TABLE public."Order"
+    ADD FOREIGN KEY (id_pharmacy)
+    REFERENCES public."Veterinary_Pharmacy" (id)
     NOT VALID;
 
 
@@ -263,9 +277,27 @@ ALTER TABLE public."Veterinary_Pharmacy"
     NOT VALID;
 
 
-ALTER TABLE public."Order"
-    ADD FOREIGN KEY (id_pharmacy)
+ALTER TABLE public."Veterinary_Pharmacy_Food"
+    ADD FOREIGN KEY ("Veterinary_Pharmacy_id")
     REFERENCES public."Veterinary_Pharmacy" (id)
+    NOT VALID;
+
+
+ALTER TABLE public."Veterinary_Pharmacy_Food"
+    ADD FOREIGN KEY ("Food_id")
+    REFERENCES public."Food" (id)
+    NOT VALID;
+
+
+ALTER TABLE public."Veterinary_Pharmacy_Medications"
+    ADD FOREIGN KEY ("Veterinary_Pharmacy_id")
+    REFERENCES public."Veterinary_Pharmacy" (id)
+    NOT VALID;
+
+
+ALTER TABLE public."Veterinary_Pharmacy_Medications"
+    ADD FOREIGN KEY ("Medications_id")
+    REFERENCES public."Medications" (id)
     NOT VALID;
 
 END;
