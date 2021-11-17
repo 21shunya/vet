@@ -140,7 +140,6 @@ CREATE TABLE IF NOT EXISTS public."Pharmacy_staff"
     "Phone" text NOT NULL,
     "Address" character varying(100) NOT NULL,
     "University" text NOT NULL,
-    "Position" character varying(33) NOT NULL,
     id_vet_ph integer NOT NULL,
     PRIMARY KEY (id)
 );
