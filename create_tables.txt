@@ -39,7 +39,6 @@ CREATE TABLE IF NOT EXISTS public."Clinic"
     id integer NOT NULL,
     "Name" character varying(100) NOT NULL,
     "Address" character varying(100) NOT NULL,
-    "Head_doctor" integer NOT NULL,
     "Phone" text NOT NULL,
     "Schedule" text NOT NULL,
     PRIMARY KEY (id)
@@ -196,12 +195,6 @@ ALTER TABLE public."Appointment"
 ALTER TABLE public."Appointment"
     ADD FOREIGN KEY (id_services)
     REFERENCES public."Services" (id)
-    NOT VALID;
-
-
-ALTER TABLE public."Clinic"
-    ADD FOREIGN KEY ("Head_doctor")
-    REFERENCES public."Doctor" (id)
     NOT VALID;
 
 
