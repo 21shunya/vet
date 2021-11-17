@@ -103,7 +103,7 @@ CREATE TABLE IF NOT EXISTS public."Medications"
 (
     id integer NOT NULL,
     "Name" character varying(50) NOT NULL,
-    "Dosage" character varying(10) NOT NULL,
+    "Dosage" integer NOT NULL,
     "Expiration_date" date NOT NULL,
     "Manufacturer" character varying,
     "Vol_qt" character varying(10),
